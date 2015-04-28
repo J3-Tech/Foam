@@ -10,14 +10,14 @@ byte mac[] = {
 IPAddress ip(192, 168, 1, 170);
 
 // Enter the IP address of the server you're connecting to:
-IPAddress server(192, 168, 1, 2);
+IPAddress server(192, 168, 1, 6);
 //char server[] = "192.168.1.2"; 
 
 // Initialize the Ethernet client library
 EthernetClient client;
 
 JsonObject& createJsonObject(){
-  StaticJsonBuffer<200> jsonBuffer;
+  StaticJsonBuffer<500> jsonBuffer;
 
   JsonObject&  contextElement = jsonBuffer.createObject();
   contextElement["type"] = "Room";
@@ -44,7 +44,7 @@ JsonObject& createJsonObject(){
 void setup() {
   
   // start the Ethernet connection:
-  Ethernet.begin(mac, ip);
+  //Ethernet.begin(mac, ip);
   // Open serial communications and wait for port to open:
   Serial.begin(9600);
   if (Ethernet.begin(mac) == 0) {
@@ -59,17 +59,17 @@ void setup() {
   Serial.println("connecting...");
 
   // if you get a connection, report back via serial:
-  if (client.connect(server, 80)) {
+  if (client.connect(server, 1026)) {
+    JsonObject& x = createJsonObject();
     Serial.println("connected");
     client.println("POST /v1/updateContext HTTP/1.1");
-    client.println("Host: 192.168.1.2:1026");
+    client.println("Host: 192.168.1.6:1026");
     client.println("User-Agent: Arduino/1.1");
     client.println("Connection: close");
     client.println("Content-Type: application/json");
     client.print("Content-Length: ");
-    client.println("227");
+    client.println(159);
     client.println();
-    JsonObject& x = createJsonObject();
     x.printTo(client);
     client.println();
     Serial.println("JSON Sent");
@@ -106,6 +106,6 @@ void loop()
     // do nothing:
     while (true);
   }else{
-    client.println("from ard");
+    //client.println("from ard");
   }
 }
