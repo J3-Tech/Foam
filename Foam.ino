@@ -2,21 +2,24 @@
 #include <Ethernet.h>
 #include <ArduinoJson.h>
 
+const int pingPin = 7;
+const int bufferSize = 160;
+
 // Enter a MAC address and IP address for your controller below.
-// The IP address will be dependent on your local network:
 byte mac[] = {
   0x90, 0xA2, 0XDA, 0x00, 0x45, 0xBA
 };
+
+// The IP address will be dependent on your local network:
 IPAddress ip(192, 168, 1, 170);
 
 // Enter the IP address of the server you're connecting to:
-IPAddress server(192, 168, 1, 6);
-//char server[] = "192.168.1.2"; 
+IPAddress server(192, 168, 1, 254);
 
 // Initialize the Ethernet client library
 EthernetClient client;
 
-JsonObject& createJsonObject(){
+JsonObject& createJsonObject(float value){
   StaticJsonBuffer<500> jsonBuffer;
 
   JsonObject&  contextElement = jsonBuffer.createObject();
@@ -25,11 +28,11 @@ JsonObject& createJsonObject(){
   contextElement["id"] = "Room1";
   JsonArray& attributes = contextElement.createNestedArray("attributes");
 
-
   JsonObject& attribute = jsonBuffer.createObject();
   attribute["name"] = "distance";
   attribute["type"] = "float";
-  attribute["value"] = "10";
+  attribute["value"].set(value,4);
+  //
   attributes.add(attribute);
 
   JsonObject& root = jsonBuffer.createObject();
@@ -40,72 +43,89 @@ JsonObject& createJsonObject(){
   return root;
 }
 
+float readSensor(){
+  float cm;
+  // The PING))) is triggered by a HIGH pulse of 2 or more microseconds.
+  // Give a short LOW pulse beforehand to ensure a clean HIGH pulse:
+  pinMode(pingPin, OUTPUT);
+  digitalWrite(pingPin, LOW);
+  delayMicroseconds(2);
+  digitalWrite(pingPin, HIGH);
+  delayMicroseconds(5);
+  digitalWrite(pingPin, LOW);
+
+  // The same pin is used to read the signal from the PING))): a HIGH
+  // pulse whose duration is the time (in microseconds) from the sending
+  // of the ping to the reception of its echo off of an object.
+  pinMode(pingPin, INPUT);
+
+  float distance = pulseIn(pingPin, HIGH);
+
+  return microsecondsToCentimeters(distance);
+}
+
+float microsecondsToCentimeters(float microseconds)
+{
+  // The speed of sound is 340 m/s or 29 microseconds per centimeter.
+  // The ping travels out and back, so to find the distance of the
+  // object we take half of the distance travelled.
+  return (microseconds / 29 / 2) / 100;
+}
 
 void setup() {
   
-  // start the Ethernet connection:
-  //Ethernet.begin(mac, ip);
   // Open serial communications and wait for port to open:
   Serial.begin(9600);
+  
+  // start the Ethernet connection:
   if (Ethernet.begin(mac) == 0) {
     Serial.println("Failed to configure Ethernet using DHCP");
     // no point in carrying on, so do nothing forevermore:
     // try to congifure using IP address instead of DHCP:
     Ethernet.begin(mac, ip);
   }
+  
   // give the Ethernet shield a second to initialize:
   delay(1000);
-
-  Serial.println("connecting...");
-
-  // if you get a connection, report back via serial:
-  if (client.connect(server, 1026)) {
-    JsonObject& x = createJsonObject();
-    Serial.println("connected");
-    client.println("POST /v1/updateContext HTTP/1.1");
-    client.println("Host: 192.168.1.6:1026");
-    client.println("User-Agent: Arduino/1.1");
-    client.println("Connection: close");
-    client.println("Content-Type: application/json");
-    client.print("Content-Length: ");
-    client.println(159);
-    client.println();
-    x.printTo(client);
-    client.println();
-    Serial.println("JSON Sent");
-  }
-  else {
-    // if you didn't get a connection to the server:
-    Serial.println("connection failed");
-  }
 }
 
 void loop()
 {
   // if there are incoming bytes available
   // from the server, read them and print them:
-  if (client.available()) {
-    char c = client.read();
-    Serial.print(c);
+  Serial.println("connecting...");
+  if (client.connect(server, 1026)) {
+    //
+      float value = readSensor();
+      Serial.println(value);
+      delay(1000);
+      JsonObject& data = createJsonObject(value);
+      client.println("POST /v1/updateContext HTTP/1.1");
+      client.println("Host: 192.168.1.254:1026");
+      client.println("User-Agent: Arduino/1.1");
+      client.println("Connection: close");
+      client.println("Accept: application/json;");
+      client.println("Content-Type: application/json;");
+      client.print("Content-Length: ");
+      client.println(bufferSize);
+      client.println();
+      data.printTo(client);
+      client.println();
+      Serial.println("JSON Sent");
+      //
+      if (client.available()) {
+        char c = client.read();
+        Serial.print(c);
+      }
+      client.stop();
   }
-
-  // as long as there are bytes in the serial queue,
-  // read them and send them out the socket if it's open:
-  /*while (Serial.available() > 0) {
-    char inChar = Serial.read();
-    if (client.connected()) {
-      client.print(inChar);
-    }
-  }*/
 
   // if the server's disconnected, stop the client:
   if (!client.connected()) {
     Serial.println();
     Serial.println("disconnecting.");
-    client.stop();
+    //client.stop();
     // do nothing:
-    while (true);
-  }else{
-    //client.println("from ard");
+    //while (true);
   }
 }
