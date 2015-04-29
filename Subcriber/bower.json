@@ -1,0 +1,26 @@
+{
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "jquery": "latest",
+    "bootstrap": "latest",
+    "angular": "latest",
+    "animate.css": "latest",
+    "font-awesome": "latest",
+    "socket.io-client": "latest",
+    "angular-route": "latest",
+    "moment": "latest",
+    "modernizr": "latest",
+    "spinkit": "latest",
+    "angular-animate": "latest"
+  },
+  "name": "colorful-alert",
+  "version": "0.0.0",
+  "author": "chellem",
+  "private": true
+}
