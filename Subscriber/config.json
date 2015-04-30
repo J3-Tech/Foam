@@ -1,0 +1,22 @@
+{
+    "broker": {
+        "scheme": "http",
+        "host":"192.168.1.254",
+        "port": 1026,
+        "request":{
+            "interval": 500,
+            "body":{
+                "entities": [
+                {
+                    "type": "Room",
+                    "isPattern": "true",
+                    "id": "Room.*"
+                }
+                ],
+                "attributes" : [
+                "distance"
+                ]
+            }
+        }
+    }
+}

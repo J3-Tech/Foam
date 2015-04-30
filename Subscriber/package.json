@@ -13,6 +13,7 @@
     "hbs": "~2.9.0",
     "johnny-five": "latest",
     "morgan": "~1.5.1",
+    "request": "^2.55.0",
     "serve-favicon": "~2.2.0",
     "socket.io": "^1.3.5"
   }

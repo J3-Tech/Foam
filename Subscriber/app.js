@@ -8,7 +8,7 @@ var bodyParser = require('body-parser');
 var routes = require('./routes/index');
 var users = require('./routes/users');
 
-var app = express();
+app = express();
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -56,5 +56,12 @@ app.use(function(err, req, res, next) {
   });
 });
 
+io = require('socket.io')();
+
+app.io=io;
+app.arduino=require('./arduino');
+
+var broker=require('./broker');
+broker.subscribe();
 
 module.exports = app;
