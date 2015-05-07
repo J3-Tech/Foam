@@ -1,7 +1,7 @@
 {
     "broker": {
         "scheme": "http",
-        "host":"192.168.1.254",
+        "host":"130.206.116.221",
         "port": 1026,
         "request":{
             "interval": 500,
