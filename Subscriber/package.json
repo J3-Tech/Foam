@@ -4,10 +4,7 @@
   "private": true,
   "scripts": {
     "start": "node ./bin/www",
-    "postinstall": [
-      "mv config.dist.json config.json",
-      "bower install"
-      ]
+    "postinstall": "bower install"
   },
   "dependencies": {
     "bower":"*",
