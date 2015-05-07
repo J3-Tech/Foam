@@ -9,12 +9,9 @@
   "dependencies": {
     "jquery": "latest",
     "bootstrap": "latest",
-    "animate.css": "latest",
     "font-awesome": "latest",
     "socket.io-client": "latest",
-    "moment": "latest",
     "modernizr": "latest",
-    "spinkit": "latest",
     "highcharts": "latest"
   },
   "name": "colorful-alert",
