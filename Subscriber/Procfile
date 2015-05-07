@@ -1,1 +1,1 @@
-web: node Subscriber/app.js
+web: node app.js
