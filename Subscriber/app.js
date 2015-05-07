@@ -10,7 +10,7 @@ var users = require('./routes/users');
 
 app = express();
 var port = process.env.PORT || 3000;
-app.listen(port);
+var server = app.listen(port);
 console.log("Listening on port " + port);
 
 // view engine setup
@@ -59,7 +59,7 @@ app.use(function(err, req, res, next) {
   });
 });
 
-io = require('socket.io')();
+io = require('socket.io').listen(server);
 
 app.io=io;
 //app.arduino=require('./arduino');
