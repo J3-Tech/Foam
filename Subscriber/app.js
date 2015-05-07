@@ -60,7 +60,6 @@ app.use(function(err, req, res, next) {
 });
 
 io = require('socket.io').listen(server);
-
 app.io=io;
 //app.arduino=require('./arduino');
 

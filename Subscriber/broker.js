@@ -29,7 +29,7 @@ Broker.subscribe = function(){
                     },
                     body: body
                 }, function (error, response, body) {
-                    app.arduino(JSON.parse(body).contextResponses[0].contextElement.attributes[0].value);
+                    //app.arduino(JSON.parse(body).contextResponses[0].contextElement.attributes[0].value);
                     if(response.statusCode == 200){
                         socket.emit('contextResponses', body);
                     } else {
