@@ -9,6 +9,9 @@ var routes = require('./routes/index');
 var users = require('./routes/users');
 
 app = express();
+var port = process.env.PORT || 3000;
+app.listen(port);
+console.log("Listening on port " + port);
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
