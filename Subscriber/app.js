@@ -59,7 +59,7 @@ app.use(function(err, req, res, next) {
 io = require('socket.io')();
 
 app.io=io;
-app.arduino=require('./arduino');
+//app.arduino=require('./arduino');
 
 var broker=require('./broker');
 broker.subscribe();
